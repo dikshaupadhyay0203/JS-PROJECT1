@@ -1,11 +1,12 @@
-// get id from URL
 const params = new URLSearchParams(window.location.search);
 const id = params.get("id");
 
-// fetch product details using id
+console.log("Product ID:", id);
+
 fetch(`https://dummyjson.com/products/${id}`)
   .then(res => res.json())
   .then(product => {
+    console.log("Product fetched:", product);
 
     document.getElementById("title").innerText = product.title;
     document.getElementById("thumbnail").src = product.thumbnail;
@@ -14,10 +15,7 @@ fetch(`https://dummyjson.com/products/${id}`)
     document.getElementById("availability").innerText =
       product.stock > 0 ? "In Stock" : "Out of Stock";
 
-    // details list
-    let details = document.getElementById("details");
-
-    details.innerHTML = `
+    document.getElementById("details").innerHTML = `
       <li><b>Brand:</b> ${product.brand}</li>
       <li><b>Category:</b> ${product.category}</li>
       <li><b>Rating:</b> ${product.rating}</li>
@@ -30,5 +28,23 @@ fetch(`https://dummyjson.com/products/${id}`)
       <li><b>Shipping:</b> ${product.shippingInformation}</li>
       <li><b>Minimum Order:</b> ${product.minimumOrderQuantity}</li>
     `;
-  })
-  .catch(err => console.log(err));
+
+    saveViewHistory(product);
+  });
+
+function saveViewHistory(product) {
+  console.log("Saving view history for:", product.id);
+
+  let viewHistory = JSON.parse(localStorage.getItem("viewHistory")) || [];
+
+  if (!viewHistory.some(item => item.id === product.id)) {
+    viewHistory.push({
+      id: product.id,
+      title: product.title,
+      thumbnail: product.thumbnail,
+      time: Date.now()
+    });
+
+    localStorage.setItem("viewHistory", JSON.stringify(viewHistory));
+  }
+}
