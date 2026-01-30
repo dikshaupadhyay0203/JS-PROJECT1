@@ -1,0 +1,41 @@
+body {
+  font-family: Arial;
+}
+
+#searchInput {
+  width: 300px;
+  padding: 10px;
+}
+
+#suggestions {
+  width: 300px;
+  border: 1px solid #ccc;
+}
+
+.suggestion-item {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #eee;
+}
+
+#products {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
