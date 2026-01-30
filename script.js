@@ -25,6 +25,12 @@ function displayProducts(products) {
     let price = document.createElement("p");
     price.innerText = "₹ " + product.price;
 
+    // ✅ click to open product details
+    card.addEventListener("click", () => {
+      console.log("Card clicked", product.id);
+      window.location.href = `productdetails.html?id=${product.id}`;
+    });
+
     card.append(img, title, price);
     container.appendChild(card);
   });
@@ -52,29 +58,31 @@ searchInput.addEventListener("keydown", (e) => {
 
 /* 🔹 SUGGESTION CODE (SIR STYLE) */
 const suggestionBox = document.getElementById("suggestions");
-searchInput.addEventListener("input",()=>{
+searchInput.addEventListener("input", () => {
   console.log("Suggestion working");
 
-  const text=searchInput.value.toLowerCase();
-  const history=JSON.parse(localStorage.getItem("searchHistory"))||[];
+  const text = searchInput.value.toLowerCase();
+  const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
 
   //filter based on query field
-  const matches=history.filter(item=>
+  const matches = history.filter(item =>
     item.query.toLowerCase().includes(text)
   );
 
   //clear previous suggestions
-  suggestionBox.innerHTML="";
+  suggestionBox.innerHTML = "";
 
   //show suggestions
-  matches.forEach(item =>{
-    const div=document.createElement("div");
-    div.className="suggestion-item";
-    div.innerText=item.query;
-    div.addEventListener("click",()=>{
-      searchInput.value=item.query;
-      suggestionBox.innerHTML="";
+  matches.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "suggestion-item";
+    div.innerText = item.query;
+
+    div.addEventListener("mousedown", () => {
+      searchInput.value = item.query;
+      suggestionBox.innerHTML = "";
     });
+
     suggestionBox.appendChild(div);
   });
 });

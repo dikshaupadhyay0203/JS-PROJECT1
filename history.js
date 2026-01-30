@@ -18,5 +18,6 @@ history.forEach(item => {
     <span class="time">${formattedTime}</span>
   `;
 
+  <br></br>
   container.appendChild(div);
 });
