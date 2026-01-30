@@ -1,23 +1,28 @@
-let history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+const history = JSON.parse(localStorage.getItem("searchHistory")) || [];
+const container = document.getElementById("historyList");
 
-let container = document.getElementById("historyList");
+console.log("History data:", history);
 
-// Sort latest first
-history.sort((a, b) => b.time - a.time);
+if (!container) {
+  console.error("historyList div not found");
+}
 
-history.forEach(item => {
-  let div = document.createElement("div");
-  div.className = "history-item";
+if (history.length === 0) {
+  container.innerHTML = "<p>No search history found</p>";
+}
 
-  // Convert timestamp to readable date
-  let date = new Date(item.time);
-  let formattedTime = date.toLocaleString(); // e.g. 29/1/2026, 10:30 AM
+history
+  .sort((a, b) => b.time - a.time)
+  .forEach(item => {
+    const div = document.createElement("div");
+    div.className = "history-item";
 
-  div.innerHTML = `
-    <strong>${item.query}</strong>
-    <span class="time">${formattedTime}</span>
-  `;
+    const time = new Date(item.time).toLocaleString();
 
-  
-  container.appendChild(div);
-});
+    div.innerHTML = `
+      <strong>${item.query}</strong>
+      <span class="time">${time}</span>
+    `;
+
+    container.appendChild(div);
+  });
