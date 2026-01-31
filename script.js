@@ -1,26 +1,36 @@
 let allProducts = [];
+let filteredProducts = [];
+let currentPage = 1;
+const itemsPerPage = 8;
 
 // Fetch products
 fetch("https://dummyjson.com/products")
   .then(res => res.json())
   .then(data => {
     allProducts = data.products;
-    displayProducts(allProducts);
+    filteredProducts = allProducts;
+    displayProducts();
+    setupPagination();
   })
   .catch(err => console.log(err));
 
 
-// Display products
-function displayProducts(products) {
+// 🔹 Display products with pagination
+function displayProducts() {
   const container = document.getElementById("products");
   container.innerHTML = "";
 
-  if (products.length === 0) {
+  const start = (currentPage - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+
+  const pageProducts = filteredProducts.slice(start, end);
+
+  if (pageProducts.length === 0) {
     container.innerHTML = "<p>No products found</p>";
     return;
   }
 
-  products.forEach(product => {
+  pageProducts.forEach(product => {
     const card = document.createElement("div");
     card.className = "card";
 
@@ -39,17 +49,46 @@ function displayProducts(products) {
 }
 
 
-// 🔹 SEARCH + SAVE HISTORY
+// 🔹 Pagination buttons
+function setupPagination() {
+  const pagination = document.getElementById("pagination");
+  pagination.innerHTML = "";
+
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
+  for (let i = 1; i <= totalPages; i++) {
+    const btn = document.createElement("button");
+    btn.innerText = i;
+    btn.className = "page-btn";
+
+    if (i === currentPage) {
+      btn.classList.add("active");
+    }
+
+    btn.addEventListener("click", () => {
+      currentPage = i;
+      displayProducts();
+      setupPagination();
+    });
+
+    pagination.appendChild(btn);
+  }
+}
+
+
+// 🔹 SEARCH + RESET PAGINATION
 const searchInput = document.getElementById("searchInput");
 
 searchInput.addEventListener("input", () => {
   const query = searchInput.value.toLowerCase();
 
-  const filtered = allProducts.filter(p =>
+  filteredProducts = allProducts.filter(p =>
     p.title.toLowerCase().includes(query)
   );
 
-  displayProducts(filtered);
+  currentPage = 1; // reset to first page
+  displayProducts();
+  setupPagination();
 });
 
 
@@ -61,7 +100,7 @@ searchInput.addEventListener("keydown", (e) => {
 });
 
 
-// 🔹 SAVE HISTORY FUNCTION
+// 🔹 SAVE HISTORY FUNCTION (UNCHANGED)
 function saveSearchHistory(query) {
   if (!query) return;
 
